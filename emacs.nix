@@ -12,6 +12,9 @@
 , gnutls
 , jansson
 , gmp
+, xlibsWrapper, libXaw, libXpm
+, Xaw3d, libXcursor, pkg-config, libXft, dbus, libpng, libjpeg, giflib, giflib_4_1
+, libtiff, librsvg, imagemagick, libselinux
 , autoconf ? null
 , automake ? null
 , texinfo ? null
@@ -19,6 +22,7 @@
 , patches ? [ ]
 , srcRepo ? false
 , needCrtDir ? false
+, needLibGif4 ? false
 }:
 
 let
@@ -42,7 +46,8 @@ stdenv.mkDerivation rec {
     ++ lib.optionals srcRepo [ autoconf automake texinfo ];
 
   buildInputs =
-    [ ncurses libxml2 gnutls gettext jansson gmp ];
+    [ ncurses libxml2 gnutls gettext jansson gmp xlibsWrapper libXaw Xaw3d libXpm libpng libjpeg libtiff libXft librsvg imagemagick ]
+    ++ (if needLibGif4 then [ giflib_4_1 ] else [ giflib ]);
 
   hardeningDisable = [ "format" ];
 
@@ -51,14 +56,8 @@ stdenv.mkDerivation rec {
   configureFlags = [
     "--disable-build-details" # for a (more) reproducible build
     "--with-modules"
-    "--with-x=no"
-    "--with-ns=no"
-    "--with-xpm=no"
-    "--with-jpeg=no"
-    "--with-png=no"
-    "--with-gif=no"
-    "--with-tiff=no"
-  ] ++ lib.optionals needCrtDir [ "--with-crt-dir=${stdenv.glibc}/lib" ];
+  ]
+  ++ lib.optionals needCrtDir [ "--with-crt-dir=${stdenv.glibc}/lib" ];
 
   postPatch = lib.concatStringsSep "\n" [
     (lib.optionalString srcRepo ''

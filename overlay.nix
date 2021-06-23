@@ -40,6 +40,7 @@ let
         ./patches/fpending-23.4.patch
       ];
       needCrtDir = true;
+      needLibGif4 = true;
     };
 
     emacs-24-1 = with super; callPackage ./emacs.nix {
