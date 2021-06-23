@@ -154,6 +154,7 @@ let
       version = "28.0.50";
       srcRepo = true;
       withAutoReconf = true;
+      withNativeCompilation = true;
     };
   };
 in

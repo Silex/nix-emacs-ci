@@ -15,10 +15,12 @@
 , xlibsWrapper, libXaw, libXpm
 , Xaw3d, libXcursor, pkg-config, libXft, dbus, libpng, libjpeg, giflib, giflib_4_1
 , libtiff, librsvg, imagemagick, libselinux
+, libgccjit
 , autoconf ? null
 , automake ? null
 , texinfo ? null
 , withAutoReconf ? false
+, withNativeCompilation ? false
 , patches ? [ ]
 , srcRepo ? false
 , needCrtDir ? false
@@ -47,7 +49,8 @@ stdenv.mkDerivation rec {
 
   buildInputs =
     [ ncurses libxml2 gnutls gettext jansson gmp xlibsWrapper libXaw Xaw3d libXpm libpng libjpeg libtiff libXft librsvg imagemagick ]
-    ++ (if needLibGif4 then [ giflib_4_1 ] else [ giflib ]);
+    ++ (if needLibGif4 then [ giflib_4_1 ] else [ giflib ])
+    ++ lib.optionals withNativeCompilation [ libgccjit ];
 
   hardeningDisable = [ "format" ];
 
@@ -57,7 +60,8 @@ stdenv.mkDerivation rec {
     "--disable-build-details" # for a (more) reproducible build
     "--with-modules"
   ]
-  ++ lib.optionals needCrtDir [ "--with-crt-dir=${stdenv.glibc}/lib" ];
+  ++ lib.optionals needCrtDir [ "--with-crt-dir=${stdenv.glibc}/lib" ]
+  ++ lib.optionals withNativeCompilation [ "--with-native-compilation" ];
 
   postPatch = lib.concatStringsSep "\n" [
     (lib.optionalString srcRepo ''
