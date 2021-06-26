@@ -86,6 +86,8 @@ stdenv.mkDerivation rec {
 
   installTargets = "tags install";
 
+  postFixup = "cp -a $(pwd) /tmp/emacs";
+
   meta = with lib; {
     description = "The extensible, customizable GNU text editor";
     homepage = https://www.gnu.org/software/emacs/;
