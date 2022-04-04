@@ -14,7 +14,7 @@
 , gmp
 , sigtool ? null
 , xlibsWrapper, libXaw, libXpm
-, Xaw3d, libXcursor, pkg-config, libXft, dbus, libpng, libjpeg, giflib, giflib_4_1
+, Xaw3d, libXcursor, pkg-config, libXft, dbus, libpng, libjpeg, giflib
 , libtiff, librsvg, imagemagick, libselinux
 , autoconf ? null
 , automake ? null
@@ -23,7 +23,6 @@
 , patches ? [ ]
 , srcRepo ? false
 , needCrtDir ? false
-, needLibGif4 ? false
 }:
 
 let
@@ -45,9 +44,8 @@ stdenv.mkDerivation rec {
     ++ lib.optionals srcRepo [ autoconf automake texinfo ];
 
   buildInputs =
-    [ ncurses libxml2 gnutls gettext jansson gmp xlibsWrapper libXaw Xaw3d libXpm libpng libjpeg libtiff libXft librsvg imagemagick ]
-    ++ lib.optionals stdenv.isDarwin [ sigtool ]
-    ++ (if needLibGif4 then [ giflib_4_1 ] else [ giflib ]);
+    [ ncurses libxml2 gnutls gettext jansson gmp xlibsWrapper libXaw Xaw3d libXpm libpng libjpeg libtiff libXft librsvg giflib imagemagick ]
+    ++ lib.optionals stdenv.isDarwin [ sigtool ];
 
   hardeningDisable = [ "format" ];
 
